@@ -58,7 +58,7 @@ jobs:
       - name: Build .deb
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         run: |
-          cargo install cargo-deb --locked
+          cargo install cargo-deb --locked --force
           cargo deb --target ${{ matrix.target }} --no-build
           DEB=$(ls target/${{ matrix.target }}/debian/*.deb)
           echo "DEB_ASSET=$DEB" >> "$GITHUB_ENV"
