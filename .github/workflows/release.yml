@@ -1,0 +1,75 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+    name: Build · ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: x86_64-unknown-linux-gnu
+            bin: valt
+            archive: tar.gz
+
+          - os: macos-13
+            target: x86_64-apple-darwin
+            bin: valt
+            archive: tar.gz
+
+          - os: macos-latest
+            target: aarch64-apple-darwin
+            bin: valt
+            archive: tar.gz
+
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            bin: valt.exe
+            archive: zip
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.target }}
+
+      - name: Build release binary
+        run: cargo build --release --target ${{ matrix.target }}
+
+      - name: Package (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          BINARY="target/${{ matrix.target }}/release/${{ matrix.bin }}"
+          ARCHIVE="valt-${{ github.ref_name }}-${{ matrix.target }}.tar.gz"
+          tar -czf "$ARCHIVE" -C "target/${{ matrix.target }}/release" "${{ matrix.bin }}"
+          echo "ASSET=$ARCHIVE" >> "$GITHUB_ENV"
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $binary = "target/${{ matrix.target }}/release/${{ matrix.bin }}"
+          $archive = "valt-${{ github.ref_name }}-${{ matrix.target }}.zip"
+          Compress-Archive -Path $binary -DestinationPath $archive
+          "ASSET=$archive" | Out-File -Append -Encoding utf8 $env:GITHUB_ENV
+
+      - name: Upload binary to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ASSET }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
