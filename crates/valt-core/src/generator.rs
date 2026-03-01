@@ -68,7 +68,10 @@ mod tests {
 
     #[test]
     fn test_length_respected() {
-        let cfg = GeneratorConfig { length: 32, ..Default::default() };
+        let cfg = GeneratorConfig {
+            length: 32,
+            ..Default::default()
+        };
         let pwd = generate(&cfg).unwrap();
         assert_eq!(pwd.len(), 32);
     }
@@ -113,7 +116,10 @@ mod tests {
 
     #[test]
     fn test_zero_length_error() {
-        let cfg = GeneratorConfig { length: 0, ..Default::default() };
+        let cfg = GeneratorConfig {
+            length: 0,
+            ..Default::default()
+        };
         assert!(matches!(generate(&cfg), Err(CoreError::InvalidLength)));
     }
 

@@ -49,7 +49,9 @@ pub fn render(f: &mut Frame, app: &AppState) {
         Line::from(""),
         Line::from(Span::styled(
             "  VALT",
-            Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD),
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD),
         )),
         Line::from(Span::styled(
             "  password manager",

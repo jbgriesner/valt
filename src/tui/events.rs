@@ -67,11 +67,18 @@ fn handle_list(app: &mut AppState, key: KeyEvent) {
     app.status = None;
 
     let (search_query, selected_idx) = match &app.view {
-        AppView::List { search_query, selected_idx } => (search_query.clone(), *selected_idx),
+        AppView::List {
+            search_query,
+            selected_idx,
+        } => (search_query.clone(), *selected_idx),
         _ => return,
     };
 
-    let count = app.vault.as_ref().map(|v| v.search(&search_query).len()).unwrap_or(0);
+    let count = app
+        .vault
+        .as_ref()
+        .map(|v| v.search(&search_query).len())
+        .unwrap_or(0);
 
     match key.code {
         KeyCode::Char('q') => {
@@ -104,7 +111,10 @@ fn handle_list(app: &mut AppState, key: KeyEvent) {
                     .as_ref()
                     .and_then(|v| v.search(&search_query).get(idx).map(|s| s.id));
                 if let Some(id) = secret_id {
-                    app.view = AppView::Detail { secret_id: id, show_password: false };
+                    app.view = AppView::Detail {
+                        secret_id: id,
+                        show_password: false,
+                    };
                 }
             }
         }
@@ -128,25 +138,33 @@ fn handle_list(app: &mut AppState, key: KeyEvent) {
                     if let Some(vault) = &mut app.vault {
                         let _ = vault.delete(id);
                     }
-                    let new_count =
-                        app.vault.as_ref().map(|v| v.list().len()).unwrap_or(0);
+                    let new_count = app.vault.as_ref().map(|v| v.list().len()).unwrap_or(0);
                     if let AppView::List { selected_idx, .. } = &mut app.view {
-                        *selected_idx =
-                            (*selected_idx).min(new_count.saturating_sub(1));
+                        *selected_idx = (*selected_idx).min(new_count.saturating_sub(1));
                     }
                     app.status = Some("Secret deleted.".to_string());
                 }
             }
         }
         KeyCode::Backspace => {
-            if let AppView::List { search_query, selected_idx, .. } = &mut app.view {
+            if let AppView::List {
+                search_query,
+                selected_idx,
+                ..
+            } = &mut app.view
+            {
                 search_query.pop();
                 *selected_idx = 0;
             }
         }
         KeyCode::Char(c) => {
             // Any printable character filters the list.
-            if let AppView::List { search_query, selected_idx, .. } = &mut app.view {
+            if let AppView::List {
+                search_query,
+                selected_idx,
+                ..
+            } = &mut app.view
+            {
                 search_query.push(c);
                 *selected_idx = 0;
             }
@@ -193,10 +211,8 @@ fn handle_detail(app: &mut AppState, key: KeyEvent) {
                 match arboard::Clipboard::new() {
                     Ok(mut cb) => {
                         if cb.set_text(&pwd).is_ok() {
-                            app.clipboard_clear_at =
-                                Some(Instant::now() + CLIPBOARD_TIMEOUT);
-                            app.status =
-                                Some("Password copied — clears in 30s".to_string());
+                            app.clipboard_clear_at = Some(Instant::now() + CLIPBOARD_TIMEOUT);
+                            app.status = Some("Password copied — clears in 30s".to_string());
                         } else {
                             app.status = Some("Failed to copy to clipboard".to_string());
                         }
@@ -247,7 +263,10 @@ fn handle_form(app: &mut AppState, key: KeyEvent) {
             match mode {
                 FormMode::Add => app.go_to_list(),
                 FormMode::Edit(id) => {
-                    app.view = AppView::Detail { secret_id: id, show_password: false };
+                    app.view = AppView::Detail {
+                        secret_id: id,
+                        show_password: false,
+                    };
                 }
             }
         }
@@ -290,7 +309,13 @@ fn handle_form(app: &mut AppState, key: KeyEvent) {
             type_char(app, c);
         }
         KeyCode::Backspace => {
-            if let AppView::Form { draft, focused_field, error, .. } = &mut app.view {
+            if let AppView::Form {
+                draft,
+                focused_field,
+                error,
+                ..
+            } = &mut app.view
+            {
                 *error = None;
                 get_field_mut(draft, *focused_field).pop();
             }
@@ -308,7 +333,13 @@ fn is_password_field(app: &AppState) -> bool {
 }
 
 fn type_char(app: &mut AppState, c: char) {
-    if let AppView::Form { draft, focused_field, error, .. } = &mut app.view {
+    if let AppView::Form {
+        draft,
+        focused_field,
+        error,
+        ..
+    } = &mut app.view
+    {
         *error = None;
         get_field_mut(draft, *focused_field).push(c);
     }

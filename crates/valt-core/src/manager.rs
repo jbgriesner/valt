@@ -2,11 +2,7 @@ use fuzzy_matcher::{skim::SkimMatcherV2, FuzzyMatcher};
 use serdevault::VaultFile;
 use uuid::Uuid;
 
-use crate::{
-    error::CoreError,
-    secret::Secret,
-    vault_data::VaultData,
-};
+use crate::{error::CoreError, secret::Secret, vault_data::VaultData};
 
 /// High-level interface to the encrypted vault.
 pub struct VaultManager {
@@ -156,8 +152,7 @@ mod tests {
     const P: u32 = 1;
 
     fn test_vault(dir: &tempfile::TempDir) -> VaultFile {
-        VaultFile::open(dir.path().join("vault.svlt"), "test_password")
-            .with_params(M, T, P)
+        VaultFile::open(dir.path().join("vault.svlt"), "test_password").with_params(M, T, P)
     }
 
     fn make_secret(name: &str, password: &str) -> Secret {
@@ -244,7 +239,9 @@ mod tests {
     fn test_update_missing() {
         let dir = tempdir().unwrap();
         let mut mgr = VaultManager::open_or_create(test_vault(&dir)).unwrap();
-        let err = mgr.update(Uuid::new_v4(), make_secret("X", "y")).unwrap_err();
+        let err = mgr
+            .update(Uuid::new_v4(), make_secret("X", "y"))
+            .unwrap_err();
         assert!(matches!(err, CoreError::NotFound(_)));
     }
 
@@ -340,8 +337,7 @@ mod tests {
         let dir = tempdir().unwrap();
         VaultManager::open_or_create(test_vault(&dir)).unwrap();
 
-        let wrong = VaultFile::open(dir.path().join("vault.svlt"), "wrong")
-            .with_params(M, T, P);
+        let wrong = VaultFile::open(dir.path().join("vault.svlt"), "wrong").with_params(M, T, P);
         let result = VaultManager::open(wrong);
         assert!(matches!(result, Err(CoreError::Vault(_))));
     }

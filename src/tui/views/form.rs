@@ -11,7 +11,14 @@ use crate::tui::app::{AppState, AppView, FormMode};
 const LABELS: [&str; 6] = ["Name", "Username", "Password", "URL", "Tags", "Notes"];
 
 pub fn render(f: &mut Frame, app: &AppState) {
-    let AppView::Form { mode, draft, focused_field, show_password, error } = &app.view else {
+    let AppView::Form {
+        mode,
+        draft,
+        focused_field,
+        show_password,
+        error,
+    } = &app.view
+    else {
         return;
     };
 
@@ -48,7 +55,9 @@ pub fn render(f: &mut Frame, app: &AppState) {
         };
 
         let label_style = if is_focused {
-            Style::default().fg(Color::Cyan).add_modifier(Modifier::BOLD)
+            Style::default()
+                .fg(Color::Cyan)
+                .add_modifier(Modifier::BOLD)
         } else {
             Style::default().fg(Color::DarkGray)
         };

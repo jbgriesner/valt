@@ -9,7 +9,11 @@ use ratatui::{
 use crate::tui::app::{AppState, AppView};
 
 pub fn render(f: &mut Frame, app: &AppState) {
-    let AppView::List { search_query, selected_idx } = &app.view else {
+    let AppView::List {
+        search_query,
+        selected_idx,
+    } = &app.view
+    else {
         return;
     };
 
@@ -36,7 +40,10 @@ pub fn render(f: &mut Frame, app: &AppState) {
     let search_block = Block::default()
         .borders(Borders::ALL)
         .border_style(Style::default().fg(Color::DarkGray))
-        .title(format!(" VALT ── {total} secret{} ", if total == 1 { "" } else { "s" }));
+        .title(format!(
+            " VALT ── {total} secret{} ",
+            if total == 1 { "" } else { "s" }
+        ));
 
     let (search_text, search_style) = if search_query.is_empty() {
         (
@@ -48,7 +55,9 @@ pub fn render(f: &mut Frame, app: &AppState) {
     };
 
     f.render_widget(
-        Paragraph::new(search_text).style(search_style).block(search_block),
+        Paragraph::new(search_text)
+            .style(search_style)
+            .block(search_block),
         chunks[0],
     );
 
@@ -60,7 +69,11 @@ pub fn render(f: &mut Frame, app: &AppState) {
 
             let base_bg = if is_sel { Color::Cyan } else { Color::Reset };
             let base_fg = if is_sel { Color::Black } else { Color::White };
-            let dim_fg = if is_sel { Color::Black } else { Color::DarkGray };
+            let dim_fg = if is_sel {
+                Color::Black
+            } else {
+                Color::DarkGray
+            };
             let tag_fg = if is_sel { Color::Black } else { Color::Blue };
 
             let tags_str = if s.tags.is_empty() {
@@ -72,7 +85,11 @@ pub fn render(f: &mut Frame, app: &AppState) {
             let name_style = Style::default()
                 .fg(base_fg)
                 .bg(base_bg)
-                .add_modifier(if is_sel { Modifier::BOLD } else { Modifier::empty() });
+                .add_modifier(if is_sel {
+                    Modifier::BOLD
+                } else {
+                    Modifier::empty()
+                });
 
             let line = Line::from(vec![
                 Span::styled(format!(" {:<28}", &s.name), name_style),
@@ -95,7 +112,11 @@ pub fn render(f: &mut Frame, app: &AppState) {
         list_state.select(Some(selected));
     }
 
-    f.render_stateful_widget(List::new(items).block(list_block), chunks[1], &mut list_state);
+    f.render_stateful_widget(
+        List::new(items).block(list_block),
+        chunks[1],
+        &mut list_state,
+    );
 
     let status_text = if let Some(msg) = &app.status {
         msg.clone()

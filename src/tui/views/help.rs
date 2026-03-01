@@ -54,8 +54,7 @@ pub fn render(f: &mut Frame, _app: &AppState) {
     f.render_widget(Paragraph::new(lines).block(block), chunks[0]);
 
     f.render_widget(
-        Paragraph::new("[Esc] or [?]  Back to list")
-            .style(Style::default().fg(Color::DarkGray)),
+        Paragraph::new("[Esc] or [?]  Back to list").style(Style::default().fg(Color::DarkGray)),
         chunks[1],
     );
 }

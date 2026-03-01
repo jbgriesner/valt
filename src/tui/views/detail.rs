@@ -9,7 +9,11 @@ use ratatui::{
 use crate::tui::app::{AppState, AppView};
 
 pub fn render(f: &mut Frame, app: &AppState) {
-    let AppView::Detail { secret_id, show_password } = &app.view else {
+    let AppView::Detail {
+        secret_id,
+        show_password,
+    } = &app.view
+    else {
         return;
     };
 
@@ -34,7 +38,11 @@ pub fn render(f: &mut Frame, app: &AppState) {
     } else {
         "•".repeat(secret.password.len().min(30))
     };
-    let pwd_hint = if *show_password { "[Space] Hide" } else { "[Space] Show" };
+    let pwd_hint = if *show_password {
+        "[Space] Hide"
+    } else {
+        "[Space] Show"
+    };
 
     let clip_hint = match app.clipboard_secs_remaining() {
         Some(secs) => format!("[c] Copy  (clears in {secs}s)"),
@@ -50,14 +58,22 @@ pub fn render(f: &mut Frame, app: &AppState) {
     let lines = vec![
         Line::from(""),
         field_line("Name    ", &secret.name, Color::White),
-        field_line("Username", secret.username.as_deref().unwrap_or("—"), Color::White),
+        field_line(
+            "Username",
+            secret.username.as_deref().unwrap_or("—"),
+            Color::White,
+        ),
         Line::from(vec![
             Span::styled("  Password : ", Style::default().fg(Color::DarkGray)),
             Span::styled(&pwd_display, Style::default().fg(Color::Yellow)),
             Span::raw("  "),
             Span::styled(pwd_hint, Style::default().fg(Color::DarkGray)),
         ]),
-        field_line("URL     ", secret.url.as_deref().unwrap_or("—"), Color::White),
+        field_line(
+            "URL     ",
+            secret.url.as_deref().unwrap_or("—"),
+            Color::White,
+        ),
         field_line("Tags    ", &tags_str, Color::Blue),
         field_line(
             "Notes   ",
@@ -91,7 +107,10 @@ pub fn render(f: &mut Frame, app: &AppState) {
 
 fn field_line<'a>(label: &'a str, value: &'a str, value_color: Color) -> Line<'a> {
     Line::from(vec![
-        Span::styled(format!("  {label} : "), Style::default().fg(Color::DarkGray)),
+        Span::styled(
+            format!("  {label} : "),
+            Style::default().fg(Color::DarkGray),
+        ),
         Span::styled(value, Style::default().fg(value_color)),
     ])
 }
