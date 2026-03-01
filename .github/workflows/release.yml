@@ -11,6 +11,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 env:
   CARGO_TERM_COLOR: always
   RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
@@ -25,11 +28,6 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            bin: valt
-            archive: tar.gz
-
-          - os: macos-13
-            target: x86_64-apple-darwin
             bin: valt
             archive: tar.gz
 
@@ -69,6 +67,7 @@ jobs:
         if: matrix.target == 'x86_64-unknown-linux-gnu'
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
           files: ${{ env.DEB_ASSET }}
           draft: false
           prerelease: ${{ contains(env.RELEASE_TAG, '-') }}
@@ -92,6 +91,7 @@ jobs:
       - name: Upload binary to release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.RELEASE_TAG }}
           files: ${{ env.ASSET }}
           draft: false
           prerelease: ${{ contains(env.RELEASE_TAG, '-') }}
@@ -113,7 +113,6 @@ jobs:
 
           for spec in \
             "x86_64-unknown-linux-gnu:SHA256_LINUX" \
-            "x86_64-apple-darwin:SHA256_MACOS_X86" \
             "aarch64-apple-darwin:SHA256_MACOS_ARM"; do
             TARGET="${spec%%:*}"
             VAR="${spec##*:}"
@@ -128,7 +127,6 @@ jobs:
           sed \
             -e "s/@@VERSION@@/${{ env.VERSION }}/g" \
             -e "s/@@SHA256_LINUX@@/${{ env.SHA256_LINUX }}/g" \
-            -e "s/@@SHA256_MACOS_X86@@/${{ env.SHA256_MACOS_X86 }}/g" \
             -e "s/@@SHA256_MACOS_ARM@@/${{ env.SHA256_MACOS_ARM }}/g" \
             packaging/homebrew/valt.rb.tmpl > valt.rb
 
