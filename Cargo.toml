@@ -6,7 +6,7 @@ resolver = "2"
 
 [package]
 name = "valt"
-version = "0.1.6"
+version = "0.1.7"
 edition = "2021"
 description = "A keyboard-driven terminal password manager — encrypted, offline, no cloud"
 license = "GPL-3.0-or-later"
