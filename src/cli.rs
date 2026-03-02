@@ -99,30 +99,23 @@ fn prompt_vault_password() -> Result<String, Box<dyn std::error::Error>> {
 /// Open an existing vault — fails with a helpful message if the file is absent.
 fn open_vault(vault_path: &PathBuf) -> Result<VaultManager, Box<dyn std::error::Error>> {
     if !vault_path.exists() {
-        return Err(
-            "Vault not found. Add your first secret with `valt add` \
+        return Err("Vault not found. Add your first secret with `valt add` \
              or launch `valt` to open the TUI."
-                .into(),
-        );
+            .into());
     }
     let password = prompt_vault_password()?;
     let vf = VaultFile::open(vault_path, &password);
-    VaultManager::open(vf)
-        .map_err(|_| "Wrong password or corrupted vault.".into())
+    VaultManager::open(vf).map_err(|_| "Wrong password or corrupted vault.".into())
 }
 
 /// Open existing vault or create a new one (used by `add`).
 fn open_or_create_vault(vault_path: &PathBuf) -> Result<VaultManager, Box<dyn std::error::Error>> {
     let password = prompt_vault_password()?;
     let vf = VaultFile::open(vault_path, &password);
-    VaultManager::open_or_create(vf)
-        .map_err(|e| format!("Failed to open vault: {e}").into())
+    VaultManager::open_or_create(vf).map_err(|e| format!("Failed to open vault: {e}").into())
 }
 
-fn cmd_list(
-    vault_path: &PathBuf,
-    query: Option<&str>,
-) -> Result<(), Box<dyn std::error::Error>> {
+fn cmd_list(vault_path: &PathBuf, query: Option<&str>) -> Result<(), Box<dyn std::error::Error>> {
     let vault = open_vault(vault_path)?;
     let results = vault.search(query.unwrap_or(""));
 
@@ -208,11 +201,7 @@ fn cmd_add(
     Ok(())
 }
 
-fn cmd_rm(
-    vault_path: &PathBuf,
-    name: &str,
-    yes: bool,
-) -> Result<(), Box<dyn std::error::Error>> {
+fn cmd_rm(vault_path: &PathBuf, name: &str, yes: bool) -> Result<(), Box<dyn std::error::Error>> {
     let mut vault = open_vault(vault_path)?;
     let results = vault.search(name);
 
