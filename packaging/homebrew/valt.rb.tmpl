@@ -12,8 +12,10 @@ class Valt < Formula
   end
 
   on_linux do
-    url "https://github.com/jbgriesner/valt/releases/download/v@@VERSION@@/valt-v@@VERSION@@-x86_64-unknown-linux-gnu.tar.gz"
-    sha256 "@@SHA256_LINUX@@"
+    on_intel do
+      url "https://github.com/jbgriesner/valt/releases/download/v@@VERSION@@/valt-v@@VERSION@@-x86_64-unknown-linux-gnu.tar.gz"
+      sha256 "@@SHA256_LINUX@@"
+    end
   end
 
   def install
@@ -21,6 +23,6 @@ class Valt < Formula
   end
 
   test do
-    assert_predicate bin/"valt", :executable?
+    assert_match "password manager", shell_output("#{bin}/valt --help")
   end
 end
