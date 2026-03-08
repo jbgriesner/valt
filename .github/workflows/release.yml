@@ -144,6 +144,21 @@ jobs:
           git diff --cached --quiet || git commit -m "valt ${{ env.VERSION }}"
           git push
 
+  publish:
+    name: Publish to crates.io
+    runs-on: ubuntu-latest
+    needs: build
+    if: ${{ !contains(env.RELEASE_TAG, '-') }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Publish
+        run: cargo publish --token ${{ secrets.CARGO_REGISTRY_TOKEN }}
+
   aur:
     name: Update AUR package
     runs-on: ubuntu-latest
