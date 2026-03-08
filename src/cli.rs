@@ -1,9 +1,9 @@
 use std::io::{self, BufRead};
 use std::path::PathBuf;
 
+use crate::core::{generate, GeneratorConfig, Secret, VaultManager};
 use clap::{Parser, Subcommand};
 use serdevault::VaultFile;
-use crate::core::{generate, GeneratorConfig, Secret, VaultManager};
 
 #[derive(Parser)]
 #[command(

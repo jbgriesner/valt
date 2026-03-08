@@ -381,5 +381,4 @@ mod tests {
         let result = VaultManager::open(wrong);
         assert!(matches!(result, Err(CoreError::Vault(_))));
     }
-
 }

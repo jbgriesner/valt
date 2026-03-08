@@ -1,8 +1,8 @@
 use std::time::{Duration, Instant};
 
+use crate::core::{Secret, VaultManager};
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use serdevault::VaultFile;
-use crate::core::{Secret, VaultManager};
 
 use super::app::{AppState, AppView, FormMode, GeneratorDraft, SecretDraft};
 
