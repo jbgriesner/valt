@@ -76,9 +76,7 @@ pub fn render(f: &mut Frame, app: &AppState) {
         status_line,
         Line::from(Span::styled(
             format!("  {vault_path}"),
-            Style::default()
-                .fg(path_color)
-                .add_modifier(Modifier::DIM),
+            Style::default().fg(path_color).add_modifier(Modifier::DIM),
         )),
         Line::from(""),
         Line::from(vec![
@@ -94,10 +92,20 @@ pub fn render(f: &mut Frame, app: &AppState) {
         Line::from(""),
         Line::from(vec![
             Span::styled("  ", Style::default()),
-            Span::styled("Enter", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "Enter",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(" Unlock", Style::default().fg(Color::DarkGray)),
             Span::styled("  ·  ", Style::default().fg(Color::DarkGray)),
-            Span::styled("Esc", Style::default().fg(Color::White).add_modifier(Modifier::BOLD)),
+            Span::styled(
+                "Esc",
+                Style::default()
+                    .fg(Color::White)
+                    .add_modifier(Modifier::BOLD),
+            ),
             Span::styled(" Quit", Style::default().fg(Color::DarkGray)),
         ]),
     ];
